@@ -1,40 +1,22 @@
-# Terra — A Terraria-Style 2D Platformer
+Terra
 
-A complete Terraria-inspired 2D sandbox platformer written in C++17 with SDL2.  
-Mine, build, craft, fight, and explore a procedurally generated world — all the way  
-from the grassy surface down to diamond-rich deep caverns.
+Terra is a Terraria-inspired 2D sandbox platformer written in C++17 with SDL2. You mine, build, craft, fight, and explore a procedurally generated world that stretches from the grassy surface all the way down to diamond-rich deep caverns.
 
----
+Features
 
-## Features
+The world is procedurally generated at 400 by 160 tiles, using Perlin noise to create rolling hills and layered geology. Beneath the surface are large connected cave networks that grow denser the deeper you go. Four tiers of ore (coal, iron, gold, and diamond) are gated by depth, so you have to dig further to find the good stuff.
 
-| System | Details |
-|---|---|
-| **Procedural world** | 400×160 tile world; Perlin-noise terrain, rolling hills, layered geology |
-| **Caves** | Large connected cave networks that grow denser with depth |
-| **Ores** | 4 ore tiers (Coal → Iron → Gold → Diamond) gated by depth |
-| **Lighting** | BFS flood-fill lighting; open sky, torch propagation, ambient cave floor |
-| **Day / night cycle** | Smooth sinusoidal 3-minute cycle; enemies spawn at night and in dark caves |
-| **Physics** | Sub-stepped AABB collision, coyote time, jump buffering |
-| **Mining** | Hold LMB; tool-tier gates (bare hands can't mine stone) |
-| **Building** | RMB to place any item flagged as placeable |
-| **Crafting** | 9 recipes (pickaxes, swords, torches) — all-or-nothing atomic crafting |
-| **Enemies** | Slimes (surface night) and Cave Crawlers (underground dark) with AI chase/patrol |
-| **Combat** | Click near an enemy to swing; sword does more damage than bare hands |
-| **Inventory** | 10-slot hotbar + 20-slot backpack, full stacking |
-| **Save / load** | Single save file; F5 to save, auto-loaded on next run |
-| **Font** | Built-in 5×7 bitmap font — zero external font dependencies |
+Lighting is handled with a BFS flood-fill system that covers open sky, torch propagation, and a dim ambient floor in the caves. A smooth day and night cycle runs on a three minute sinusoidal loop, and enemies spawn at night and in dark caves. Movement uses sub-stepped AABB collision with coyote time and jump buffering, so it feels responsive rather than stiff.
 
----
+Mining is done by holding the left mouse button, and tool tiers matter (bare hands can't break stone, for example). You build by placing any item flagged as placeable with the right mouse button. There are nine crafting recipes covering pickaxes, swords, and torches, and crafting is atomic, meaning it either happens in full or not at all.
 
-## Requirements
+For combat, you'll face slimes on the surface at night and cave crawlers underground in the dark, both with chase and patrol AI. Click near an enemy to swing at it, and a sword does more damage than your bare hands. Your inventory is a 10-slot hotbar plus a 20-slot backpack with full stacking. The game saves to a single file (press F5 to save, and it loads automatically on your next run). The font is a built-in 5 by 7 bitmap font, so there are no external font dependencies to worry about.
 
-- **Compiler**: g++ with C++17 support  
-- **Library**: SDL2 (core only — no SDL_image, no SDL_ttf)
+Requirements
 
-### Install SDL2
+You'll need g++ with C++17 support and the SDL2 library (core only, so no SDL_image or SDL_ttf). Install SDL2 with the command that matches your system:
 
-```bash
+bash
 # Ubuntu / Debian
 sudo apt install libsdl2-dev
 
@@ -46,178 +28,62 @@ brew install sdl2
 
 # Windows (MSYS2 / MinGW-w64)
 pacman -S mingw-w64-x86_64-SDL2
-```
+Build and Run
 
----
+Clone the repo, move into the folder, and build the optimised release:
 
-## Build & Run
-
-```bash
+bash
 git clone <repo>
 cd terra
-
-# Build optimised release
 make
-
-# Run
 ./terra
 
-# Or build + run in one step
-make run
+You can also build and run in one step with make run. For a debug build with AddressSanitizer and UBSan, use make debug && ./terra_debug. To run all the logic-layer unit tests (which don't need SDL), use make tests, and clean up build artefacts with make clean.
 
-# Debug build (AddressSanitizer + UBSan)
-make debug && ./terra_debug
+If you're on Windows with Visual Studio, create a new project, add all the src/*.cpp files, add the SDL2 include and lib paths, and link SDL2.lib and SDL2main.lib. You may also need to change #include <SDL2/SDL.h> to #include <SDL.h> in Game.h.
 
-# Run all logic-layer unit tests (no SDL required)
-make tests
+Controls
 
-# Clean build artefacts
-make clean
-```
+Move left with A or the left arrow, and right with D or the right arrow. Jump with W, Space, or the up arrow. Hold the left mouse button to mine the tile under your cursor, or click it in open air to attack a nearby enemy. The right mouse button places your held block.
 
-> **Windows (Visual Studio)**: Create a new project, add all `src/*.cpp` files,  
-> add the SDL2 include/lib paths, and link `SDL2.lib` + `SDL2main.lib`.  
-> Change `#include <SDL2/SDL.h>` to `#include <SDL.h>` in `Game.h` if needed.
+Scroll to cycle through the hotbar, or press keys 1 through 0 to select a slot directly. Press E to open and close the inventory and crafting panel, F1 to toggle the help overlay, F5 to save, and ESC to quit.
 
----
+Gameplay Guide
 
-## Controls
+You spawn on the surface with a stone pickaxe, a wood sword, some wood, and a few torches. Start by punching trees with the left mouse button to gather wood, which needs no tool. Press E to open the inventory panel and craft better gear. Mine coal (the black ore in stone) and combine it with wood to make more torches. From there, dig down to find iron, then gold, then diamond.
 
-| Key / Mouse | Action |
-|---|---|
-| `A` / `←` | Move left |
-| `D` / `→` | Move right |
-| `W` / `Space` / `↑` | Jump |
-| **LMB (hold)** | Mine tile under cursor |
-| **LMB (click air)** | Attack enemy near cursor |
-| **RMB** | Place held block |
-| `Scroll` | Cycle hotbar selection |
-| `1` – `0` | Select hotbar slot |
-| `E` | Open / close inventory & crafting |
-| `F1` | Toggle help overlay |
-| `F5` | Save game |
-| `ESC` | Quit |
+Crafting recipes
 
----
+A wood pickaxe takes 6 wood, and a wood sword takes 4 wood. A stone pickaxe needs 2 wood and 6 stone, while a stone sword needs 2 wood and 4 stone. The iron and gold tiers follow the same pattern: the pickaxe is 2 wood plus 6 of the ore, and the sword is 2 wood plus 4 of the ore. Torches come 4 at a time from 1 wood and 1 coal.
 
-## Gameplay Guide
+Tool tiers
 
-### Getting started
+Bare hands can mine dirt, grass, leaves, and wood. A wood pickaxe adds stone and coal. A stone pickaxe adds iron ore, an iron pickaxe adds gold ore, and a gold pickaxe adds diamond ore.
 
-You spawn on the surface with a **Stone Pickaxe**, **Wood Sword**, some **Wood**, and **Torches**.
+Ore depth guide
 
-1. **Punch trees** (LMB) for Wood — no tool required for Leaves/Wood  
-2. Press **E** to open the inventory panel and craft better gear  
-3. Mine **Coal** (black ore in stone) — combine with Wood to make more Torches  
-4. Dig down to find **Iron**, then **Gold**, then **Diamond**  
+Coal appears everywhere from the surface down. Iron starts showing up in the underground layer around rows 60 to 95. Gold joins in through the caverns from rows 95 to 130, and diamond appears (rarely) in the deep from rows 130 to 157.
 
-### Crafting recipes
+Enemies
 
-| Result | Ingredients |
-|---|---|
-| Wood Pickaxe | 6× Wood |
-| Wood Sword | 4× Wood |
-| Stone Pickaxe | 2× Wood + 6× Stone |
-| Stone Sword | 2× Wood + 4× Stone |
-| Iron Pickaxe | 2× Wood + 6× Iron |
-| Iron Sword | 2× Wood + 4× Iron |
-| Gold Pickaxe | 2× Wood + 6× Gold |
-| Gold Sword | 2× Wood + 4× Gold |
-| Torch (×4) | 1× Wood + 1× Coal |
+Slimes spawn at night on the surface and hop toward you for gentle damage. Cave crawlers spawn underground wherever light drops below about 30 percent, and they walk and chase for higher damage. A good tip is to place torches in caves, since they prevent cave crawler spawns and let you see the ore around you.
 
-### Tool tiers
+Lighting
 
-| Pickaxe | Mines |
-|---|---|
-| Bare hands | Dirt, Grass, Leaves, Wood |
-| Wood Pickaxe | + Stone, Coal |
-| Stone Pickaxe | + Iron Ore |
-| Iron Pickaxe | + Gold Ore |
-| Gold Pickaxe | + Diamond Ore |
+Open sky gives full brightness. Every solid tile the light passes through costs 0.32 brightness, and every air tile costs 0.06. Torches emit full brightness and re-illuminate a 40-tile radius when placed. Caves without torches sit at a dim ambient floor that's barely visible, so bring torches.
 
-### Ore depth guide
+Architecture
 
-```
-Surface  (rows 0–60)  : Coal only
-Underground (60–95)   : Coal + Iron
-Caverns   (95–130)    : + Gold
-The Deep  (130–157)   : + Diamond (rare)
-```
+The project lives under src/, with the entry point in main.cpp. Tunable constants sit in Config.h, and Color.h holds a dependency-free RGBA struct. Tiles and items are defined in TileType.h/.cpp and Item.h/.cpp, the latter also holding the crafting recipes. World generation uses Perlin noise and fBm from Noise.h/.cpp, and World.h/.cpp manages the tile grid, procedural generation, BFS lighting, and serialization.
 
-### Enemies
+The player logic (physics, AABB collision, mining, and placing) is in Player.h/.cpp, and the inventory (stacking, crafting, serialization) is in Inventory.h/.cpp. Enemy AI, physics, and spawning live in Enemy.h/.cpp, while Particle.h/.cpp handles break and death particle bursts. The save system in SaveSystem.h/.cpp bundles the world, player, and inventory into one file, and BitmapFont.h/.cpp provides the self-contained pixel font. Finally, Game.h/.cpp holds the SDL2 main loop, rendering, and UI.
 
-| Enemy | Spawns when | Behaviour |
-|---|---|---|
-| **Slime** | Night, surface | Hops toward player, gentle damage |
-| **Cave Crawler** | Underground, dark (light < 30%) | Walks/chases, higher damage |
+The tests/ folder holds headless logic test suites for the world, player, inventory, enemy, and save system, none of which need SDL to run. The design splits the game into a graphics-free logic layer (World, Player, Inventory, Enemy, SaveSystem) and a thin SDL2 rendering layer (Game). Every logic module has a matching headless test suite, and make tests runs them all.
 
-**Tip:** Place Torches in caves — they prevent Cave Crawler spawns and let you see ores.
+Save file format
 
-### Lighting
+The game writes to terra_save.dat in the working directory. It's a binary format that starts with a TERRASAV header and version number, followed by the world blob, the player's position, health, and max health, the current day time, and finally the inventory blob. Delete terra_save.dat to start a fresh world.
 
-- Open sky = full brightness  
-- Each solid tile the light passes through costs 0.32 brightness  
-- Each air tile costs 0.06  
-- Torches emit full (1.0) brightness and re-illuminate a 40-tile radius on placement  
-- Caves without torches sit at a dim ambient floor (barely visible — bring torches!)
+Tuning
 
----
-
-## Architecture
-
-```
-terra/
-├── src/
-│   ├── Config.h          — All tunable constants (tile size, physics, timing…)
-│   ├── Color.h           — Dependency-free RGBA struct
-│   ├── TileType.h/.cpp   — Tile enum + per-tile property table
-│   ├── Item.h/.cpp       — Item enum, properties, crafting recipes
-│   ├── Noise.h/.cpp      — Perlin noise + fBm (world generation)
-│   ├── World.h/.cpp      — Tile grid, procedural gen, BFS lighting, serialization
-│   ├── Player.h/.cpp     — Physics, AABB collision, mining, placing
-│   ├── Inventory.h/.cpp  — Stacking, crafting, serialization
-│   ├── Enemy.h/.cpp      — AI (chase/patrol), physics, spawn manager
-│   ├── Particle.h/.cpp   — Break/death particle bursts
-│   ├── SaveSystem.h/.cpp — Bundles World + Player + Inventory into one file
-│   ├── BitmapFont.h/.cpp — Self-contained 5×7 pixel font (no SDL_ttf)
-│   ├── Game.h/.cpp       — SDL2 main loop, rendering, UI
-│   └── main.cpp          — Entry point
-├── tests/                — Headless logic test suites (no SDL required)
-│   ├── test_world.cpp
-│   ├── test_player.cpp
-│   ├── test_inventory.cpp
-│   ├── test_enemy.cpp
-│   └── test_savesystem.cpp
-├── Makefile
-└── README.md
-```
-
-The game is split into a **graphics-free logic layer** (World, Player, Inventory, Enemy, SaveSystem) and a **thin SDL2 rendering layer** (Game). Every logic module has a corresponding headless test suite that runs without a display — `make tests` runs them all.
-
----
-
-## Save file format
-
-`terra_save.dat` in the working directory. Binary format:
-
-```
-[TERRASAV][version:i32][TWLD world blob][player x,y,hp,maxhp : 4×f32]
-[dayTime:f32][TINV inventory blob]
-```
-
-Delete `terra_save.dat` to start a fresh world.
-
----
-
-## Tuning
-
-All gameplay constants live in `src/Config.h`:
-
-```cpp
-Config::WORLD_WIDTH / WORLD_HEIGHT   // change world size
-Config::DAY_LENGTH_SECONDS           // speed up/slow down day cycle
-Config::GRAVITY / JUMP_VELOCITY      // adjust physics feel
-Config::REACH_TILES                  // mining/placing range
-Config::MAX_ENEMIES_ALIVE            // enemy cap
-Config::LIGHT_FALLOFF_SOLID          // how fast light dies through stone
-```
+All the gameplay constants live in src/Config.h. You can change the world size with WORLD_WIDTH and WORLD_HEIGHT, speed up or slow down the day with DAY_LENGTH_SECONDS, and adjust how the physics feel with GRAVITY and JUMP_VELOCITY. REACH_TILES sets your mining and placing range, MAX_ENEMIES_ALIVE caps the enemy count, and LIGHT_FALLOFF_SOLID controls how fast light dies through stone.
