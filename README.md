@@ -12,6 +12,8 @@ Mining is done by holding the left mouse button, and tool tiers matter (bare han
 
 For combat, you'll face slimes on the surface at night and cave crawlers underground in the dark, both with chase and patrol AI. Click near an enemy to swing at it, and a sword does more damage than your bare hands. Your inventory is a 10-slot hotbar plus a 20-slot backpack with full stacking. The game saves to a single file (press F5 to save, and it loads automatically on your next run). The font is a built-in 5 by 7 bitmap font, so there are no external font dependencies to worry about.
 
+I made this a while ago but decided to put it on GitHub to share.
+
 # SETUP
 You'll need g++ with C++17 support and the SDL2 library (core only, so no SDL_image or SDL_ttf). Install SDL2 with the command that matches your system:
 
